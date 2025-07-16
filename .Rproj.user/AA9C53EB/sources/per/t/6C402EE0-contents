@@ -1,0 +1,22 @@
+---
+title: "workbench"
+author: "74465159 Ethan Milne"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+cleaning
+
+```{r}
+
+
+```
+
+```{r}
+
+
+```

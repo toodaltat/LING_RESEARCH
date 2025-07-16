@@ -1,0 +1,38 @@
+---
+title: "workbench"
+author: "74465159 Ethan Milne"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+cleaning
+
+```{r}
+news_fake <- read.csv("C:\\Users\\Ethan\\OneDrive\\Cloud_Desktop\\00_UC\\00_2025_S2\\00_LING\\00_analysis\\data_sets\\fake.csv")
+
+news_true <- read.csv("C:\\Users\\Ethan\\OneDrive\\Cloud_Desktop\\00_UC\\00_2025_S2\\00_LING\\00_analysis\\data_sets\\true.csv")
+```
+
+
+```{r}
+sample <- news_fake$text[47]
+unique(news_fake$subject)
+unique(news_true$subject)
+```
+
+
+```{r}
+# This process does not leave the data in a handlable state.
+# true_text <- news_true[, c("title", "text")]
+
+true_sample <- news_true$text[1674]
+fake_sample <- news_fake$text[1674]
+
+
+write.table(true_sample, file = "true_output_b_1674.txt", row.names = FALSE, col.names = TRUE, sep = "\t")
+write.table(fake_sample, file = "fake_output_b_1674.txt", row.names = FALSE, col.names = TRUE, sep = "\t")
+```
