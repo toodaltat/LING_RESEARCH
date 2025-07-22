@@ -5,7 +5,7 @@ main clause:
 	[saying(Participal clause :use of "saying" to describe what the sentors are doing:) [the technology [(modifiys NP<-)used to identify travelers [on some flights [departing from nine U.S. airports [for international destinations [may not be accurate enough and raises privacy concerns."]]]]]]]
 
 
-MAIN[Two U.S. senators [on Thursday [urged [federal authorities INF[to halt the planned expansion of a $1 billion airport facial scanning program]], SUB_PARTICLABLE[saying [the technology [used to identify travelers on some flights [departing from nine U.S. airports [for international destinations [may [not be accurate enough PARTICLPE_P[and [raises privacy concerns]]]]]]]]]]]
+MAIN[Two U.S. senators [on Thursday [urged [federal authorities INF[to halt the planned expansion of a $1 billion airport facial scanning program]], SUB_PARTICLABLE[saying [the technology [used to identify travelers on some flights [departing from nine U.S. airports [for international destinations [may [not be accurate enough PARTICLPE_P[and [raises privacy concerns]]]]]]]]]]]]
 
 
 

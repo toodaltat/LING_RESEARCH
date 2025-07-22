@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-cleaning
+Pull
 
 ```{r}
 news_fake <- read.csv("C:\\Users\\Ethan\\OneDrive\\Cloud_Desktop\\00_UC\\00_2025_S2\\00_LING\\00_analysis\\data_sets\\fake.csv")
@@ -19,9 +19,9 @@ news_true <- read.csv("C:\\Users\\Ethan\\OneDrive\\Cloud_Desktop\\00_UC\\00_2025
 
 
 ```{r}
-sample <- news_fake$text[47]
-unique(news_fake$subject)
-unique(news_true$subject)
+#sample <- news_fake$text[47]
+#unique(news_fake$subject)
+#unique(news_true$subject)
 ```
 
 
@@ -29,8 +29,8 @@ unique(news_true$subject)
 # This process does not leave the data in a handlable state.
 # true_text <- news_true[, c("title", "text")]
 
-true_sample <- news_true$text[1674]
-fake_sample <- news_fake$text[1674]
+true_sample <- news_true$text[82]
+fake_sample <- news_fake$text[82]
 
 
 write.table(true_sample, file = "true_output_b_1674.txt", row.names = FALSE, col.names = TRUE, sep = "\t")
