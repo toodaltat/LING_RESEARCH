@@ -9,30 +9,98 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Pull
-
 ```{r}
-news_fake <- read.csv("C:\\Users\\Ethan\\OneDrive\\Cloud_Desktop\\00_UC\\00_2025_S2\\00_LING\\00_analysis\\data_sets\\fake.csv")
+# Checking that NLP resources are available
 
-news_true <- read.csv("C:\\Users\\Ethan\\OneDrive\\Cloud_Desktop\\00_UC\\00_2025_S2\\00_LING\\00_analysis\\data_sets\\true.csv")
+# file.edit("~/.Rprofile")
+
+R.version.string
+is_keras_available()
+py_module_available("tensorflow")
 ```
 
 
 ```{r}
-#sample <- news_fake$text[47]
-#unique(news_fake$subject)
-#unique(news_true$subject)
+# Loading csv
+news_fake <- read.csv(file.path(file_path, "fake.csv"))
+
+news_true <- read.csv(file.path(file_path, "true.csv"))
 ```
 
 
 ```{r}
-# This process does not leave the data in a handlable state.
-# true_text <- news_true[, c("title", "text")]
+# Cleaning
 
-true_sample <- news_true$text[82]
-fake_sample <- news_fake$text[82]
+news_true$text <- stringr::str_replace(news_true$text, "^.*?(?:\\(Reuters\\)\\s*-\\s*)", "")
+news_true$text <- gsub("U.S.", "United States", news_true$text, fixed = TRUE)
+
+news_true <- news_true[nchar(news_true$text) >= 50, ]
+news_fake <- news_fake[nchar(news_fake$text) >= 50, ]
+
+```
 
 
-write.table(true_sample, file = "true_output_b_1674.txt", row.names = FALSE, col.names = TRUE, sep = "\t")
-write.table(fake_sample, file = "fake_output_b_1674.txt", row.names = FALSE, col.names = TRUE, sep = "\t")
+```{r}
+extract_first_sentence <- function(text) {
+  if (is.na(text) || text == "") {
+    return(NA_character_)
+  }
+  
+  first_sentence <- str_extract(text, "^.*?[.!?](?=\\s|$)")
+  
+  if (is.na(first_sentence)) {
+    return(trimws(text))
+  } else {
+    return(trimws(first_sentence))
+  }
+}
+
+# Building true news dataframe
+one_sentence_true <- data.frame(
+  entry = 1:nrow(news_true),
+  first_sentence = sapply(news_true$text, extract_first_sentence),
+  truth_value = TRUE
+)
+rownames(one_sentence_true) <- NULL
+one_sentence_true <- head(one_sentence_true, 500)
+
+# Building fake news dataframe
+one_sentence_fake <- data.frame(
+  entry = 1:nrow(news_fake),
+  first_sentence = sapply(news_fake$text, extract_first_sentence),
+  truth_value = FALSE
+)
+rownames(one_sentence_fake) <- NULL
+one_sentence_fake <- head(one_sentence_fake, 500)
+
+# # Combining dataframes
+# if (!("index" %in% colnames(one_sentence_fake))) {
+#   one_sentence_fake$index <- NULL
+# }
+# combined_df <- rbind(one_sentence_true, one_sentence_fake)
+# combined_df <- combined_df[nchar(combined_df$first_sentence) >= 50, ]
+```
+
+
+```{r}
+# reindex_dataframe <- function(combined_df) {
+#   combined_df$index <- seq_len(nrow(combined_df))
+#   return(df)
+# }
+# 
+# entries <- c(1:10, 501:510)
+# 
+# subset_df <- combined_df[combined_df$entry %in% entries, ]
+
+# write.csv(subset_df, "subset_dataframe.csv", row.names = FALSE)
+```
+
+
+```{r}
+entries <- (1:20)
+
+sentence_fake <- one_sentence_fake[one_sentence_fake$entry %in% entries, ]
+
+View(sentence_fake)
+
 ```

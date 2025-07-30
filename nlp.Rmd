@@ -1,0 +1,40 @@
+---
+title: "NLP"
+author: "74465159 Ethan Milne"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# NLP processes
+```{r}
+
+# Sample sentences (replace with your actual sentences)
+sentences <- c("I love to code", "Coding is fun", "R is great for data science")
+
+# Step 1: Create and fit tokenizer
+tokenizer <- text_tokenizer(oov_token = "<OOV>")
+fit_text_tokenizer(tokenizer, sentences)
+
+# Get word index
+word_index <- tokenizer$word_index
+
+# Step 2: Convert texts to sequences
+sequences <- texts_to_sequences(tokenizer, sentences)
+
+# Step 3: Pad sequences
+padded <- pad_sequences(sequences, padding = "post")
+
+# Output results
+print("Word Index:")
+print(word_index)
+print("Sequences:")
+print(sequences)
+print("Padded Sequences:")
+print(padded)
+```
+

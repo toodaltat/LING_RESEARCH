@@ -1,0 +1,98 @@
+---
+title: "labbcat"
+author: "74465159 Ethan Milne"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#file.edit("~/.Rprofile")
+```
+
+```{r}
+file_path <- ("C:\\Users\\Ethan\\OneDrive\\Cloud_Desktop\\00_UC\\00_2025_S2\\00_LING\\00_analysis\\data_sets\\EG882_DeniseMcCulloch.eaf")
+
+eaf_data <- read_xml(file_path)
+
+# Find all tiers (adjust TIER_ID if you know the specific tier name, e.g., "transcription")
+tiers <- xml_find_all(eaf_data, "//TIER")
+
+# Initialize a data frame to store transcript data
+transcript_data <- data.frame(
+  tier_id = character(),
+  annotation_id = character(),
+  time_start = character(),
+  time_end = character(),
+  transcript = character(),
+  stringsAsFactors = FALSE
+)
+
+# Loop through each tier to extract annotations
+for (tier in tiers) {
+  # Get the tier ID (or name) for reference
+  tier_id <- xml_attr(tier, "TIER_ID")
+  
+  # Find all annotations in this tier
+  annotations <- xml_find_all(tier, ".//ANNOTATION/ALIGNABLE_ANNOTATION")
+  
+  # Extract annotation details
+  for (ann in annotations) {
+    ann_id <- xml_attr(ann, "ANNOTATION_ID")
+    time_slot_ref1 <- xml_attr(ann, "TIME_SLOT_REF1")
+    time_slot_ref2 <- xml_attr(ann, "TIME_SLOT_REF2")
+    transcript_text <- xml_text(xml_find_first(ann, ".//ANNOTATION_VALUE"))
+    
+    # Get timestamps from TIME_SLOT elements
+    time_start <- xml_text(xml_find_first(eaf_data, sprintf("//TIME_SLOT[@TIME_SLOT_ID='%s']/@TIME_VALUE", time_slot_ref1)))
+    time_end <- xml_text(xml_find_first(eaf_data, sprintf("//TIME_SLOT[@TIME_SLOT_ID='%s']/@TIME_VALUE", time_slot_ref2)))
+    
+    # Add to data frame
+    transcript_data <- rbind(transcript_data, data.frame(
+      tier_id = tier_id,
+      annotation_id = ann_id,
+      time_start = time_start,
+      time_end = time_end,
+      transcript = transcript_text,
+      stringsAsFactors = FALSE
+    ))
+  }
+}
+
+# Print the transcript data
+print(transcript_data)
+
+# Optionally, save the transcript to a CSV file
+write.csv(transcript_data, "eaf_transcript.csv", row.names = FALSE)
+
+
+data_old <- read.csv("eaf_transcript.csv")
+View(data)
+```
+
+
+
+```{r}
+really_df <- read.csv("C:\\Users\\Ethan\\OneDrive\\Cloud_Desktop\\00_UC\\00_2025_S2\\00_LING\\00_analysis\\data_sets\\results_orthography_really segment_r.csv")
+
+View(really_df)
+```
+
+
+```{r}
+library(nzilbb.labbcat)
+
+labbcat.url <- "https://labbcat.canterbury.ac.nz/demo/"
+```
+
+```{r}
+participants <- getParticipantIds(labbcat.url)
+transcripts <- getTranscriptIds(labbcat.url)
+
+paste("There are", length(participants), "participants. The they are ->", participants)
+paste("There are", length(transcripts), "transcripts. The they are ->", transcripts)
+```
