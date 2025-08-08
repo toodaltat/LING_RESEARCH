@@ -1,0 +1,100 @@
+---
+title: "nlp_workbench"
+author: "74465159 Ethan Milne"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+sentences <- c(
+  "On Friday, it was revealed that former Milwaukee Sheriff David Clarke, who was being considered for Homeland Security Secretary in Donald Trump’s administration, has an email scandal of his own.",
+  "In January, there was a brief run-in on a plane between Clarke and fellow passenger Dan Black, who he later had detained by the police for no reason whatsoever, except that maybe his feelings were hurt.",
+  "On Christmas day, Donald Trump announced that he would be back to work the following day, but he is golfing for the fourth day in a row."
+)
+
+
+
+x <- subset(brussels_reviews, language == "nl")
+
+```
+
+
+```{r}
+txt <- c(text1 = "This is $10 in 999 different ways,\n up and down; left and right!",
+         text2 = "@koheiw7 working: on #quanteda 2day\t4ever, http://textasdata.com?page=123.")
+tokenize_word3(txt, remove_punct = TRUE)
+
+
+tokeninfo <- summary(data_corpus_inaugural)
+
+tokeninfo[which.max(tokeninfo$Sentences), ]
+
+
+tokeninfo[which.min(tokeninfo$Sentences), ]
+
+if (require(ggplot2))
+  ggplot(data = tokeninfo, aes(x = Year, y = Sentences, group = 1)) + geom_line() + geom_smooth() + geom_point() + scale_x_continuous(labels = c(seq(1789, 2017, 12)), breaks = seq(1789, 2017, 12)) + theme_bw()
+```
+
+
+```{r}
+# library(quanteda)
+# x <- data_corpus_inaugural
+# 
+# toks <- tokenize_word4(x, remove_punct = TRUE)
+# # View(toks)
+# 
+# toks <- tokens_select(toks, pattern = stop_words, selection = 'remove')
+# 
+# tokens_sel
+# 
+# toks <- tokens_remove(toks, stopwords("en"))
+# toks <- tokens_wordstem(toks)
+# dfm_inaug <- dfm(toks) %>% 
+#   dfm_trim(min_termfreq = 50, verbose = FALSE)
+
+```
+
+```{r}
+# Download and load UDPipe model
+ud_model_info <- udpipe_download_model(language = "english")
+ud_model <- udpipe_load_model(ud_model_info$file_model)
+
+x <- data_corpus_inaugural
+
+
+
+annotated <- udpipe_annotate(ud_model, x = x, doc_id = 1:length(x)) %>% as.data.frame()
+View(annotated)
+
+
+# 
+for (sentence in sentences) {
+  # Filter annotations for current sentence
+  doc_id <- which(sentences == sentence)
+  tokens <- annotated %>% filter(doc_id == !!doc_id) %>%
+    select(token_id, token, upos, dep_rel, head_token_id)
+
+  # Initialize clauses
+  clauses <- list()
+  clause_id <- 1
+
+  # Identify main clause (root verb)
+  root_verb <- tokens %>% filter(dep_rel == "root")
+  if (nrow(root_verb) > 0) {
+    clause_tokens <- tokens %>% filter(token_id %in% get_subtree_ids(tokens, root_verb$token_id))
+    boundary <- paste(clause_tokens$token, collapse = " ")
+    clauses[[clause_id]] <- list(
+      type = "Main Clause",
+      boundary = boundary,
+      tokens = clause_tokens
+    )
+    clause_id <- clause_id + 1
+  }
+
+```

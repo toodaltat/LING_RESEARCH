@@ -11,12 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 # Checking that NLP resources are available
-
-# file.edit("~/.Rprofile")
-
-R.version.string
-is_keras_available()
-py_module_available("tensorflow")
+file.edit("~/.Rprofile")
 ```
 
 
@@ -34,9 +29,8 @@ news_true <- read.csv(file.path(file_path, "true.csv"))
 news_true$text <- stringr::str_replace(news_true$text, "^.*?(?:\\(Reuters\\)\\s*-\\s*)", "")
 news_true$text <- gsub("U.S.", "United States", news_true$text, fixed = TRUE)
 
-news_true <- news_true[nchar(news_true$text) >= 50, ]
-news_fake <- news_fake[nchar(news_fake$text) >= 50, ]
-
+# news_true <- news_true %>% filter(nchar(text) >= 60)
+# news_fake <- news_fake %>% filter(nchar(text) >= 60)
 ```
 
 
@@ -71,6 +65,7 @@ one_sentence_fake <- data.frame(
   truth_value = FALSE
 )
 rownames(one_sentence_fake) <- NULL
+one_sentence_fake <- one_sentence_fake[nchar(one_sentence_fake$first_sentence) > 100, ]
 one_sentence_fake <- head(one_sentence_fake, 500)
 
 # # Combining dataframes
@@ -101,6 +96,14 @@ entries <- (1:20)
 
 sentence_fake <- one_sentence_fake[one_sentence_fake$entry %in% entries, ]
 
+
+sentence_fake <- sentence_fake[nchar(sentence_fake$first_sentence) > 100, ]
+
 View(sentence_fake)
 
+
+```
+
+
+```{r}
 ```
