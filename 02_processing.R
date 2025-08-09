@@ -1,41 +1,30 @@
----
-title: "workbench"
-author: "74465159 Ethan Milne"
-date: "`r Sys.Date()`"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r}
 # Loading libraries, checking versions and availability 
 source("01_tools.R")
-```
 
-
-```{r}
+################################################################################
 # Loading csv
+################################################################################
 news_fake <- read.csv(file.path(file_path, "fake.csv"))
 
 news_true <- read.csv(file.path(file_path, "true.csv"))
-```
+################################################################################
 
 
-```{r}
+################################################################################
 # Cleaning #
+################################################################################
 
 # Removing 'Reuters' to avoid giving a non-linguistic hint
 news_true$text <- stringr::str_replace(news_true$text, "^.*?(?:\\(Reuters\\)\\s*-\\s*)", "")
 
 # Cheap way to over come 'U.S.' interrupting sentence 
 news_true$text <- gsub("U.S.", "United States", news_true$text, fixed = TRUE)
-```
+################################################################################
 
 
-```{r}
+################################################################################
 # Extraction
+################################################################################
 
 # Building true news dataframe
 one_sentence_true <- data.frame(
@@ -52,11 +41,12 @@ one_sentence_fake <- data.frame(
   first_sentence = sapply(news_fake$text, extract_first_sentence),
   truth_value = FALSE
 )
-```
+################################################################################
 
 
-```{r}
+################################################################################
 # Collecting the first 100 sentences and filtering by sentences that have more than 100 characters
+################################################################################
 
 entries <- (1:100)
 
@@ -65,4 +55,3 @@ sentence_fake <- one_sentence_fake %>%
 
 sentence_true <- one_sentence_true %>%
   filter(entry %in% entries, nchar(first_sentence) > 100)
-```

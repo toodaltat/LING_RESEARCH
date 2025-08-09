@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-source("02_evaluating.Rmd")
+source("03_evaluating.R")
 ```
 
 ```{r}
