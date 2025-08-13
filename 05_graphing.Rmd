@@ -13,112 +13,54 @@ knitr::opts_chunk$set(echo = TRUE)
 source("03_evaluating.R")
 ```
 
+# Mock csv file
 ```{r}
-df <- one_sentence_fake
 
-udmodel <- udpipe_download_model(language = "english-ewt")
-
-udmodel <- udpipe_load_model(file = udmodel$file_model)
-```
-
-```{r}
-# df testing space
-
-```
-
-
-
-```{r}
-annotations <- udpipe_annotate(udmodel, x = df$first_sentence, doc_id = df$entry)
-
-annotations_df <- as.data.frame(annotations)
-```
-
-```{r}
-# annotations_df testing space
-
-str(annotations_df)
-```
-
-
-
-```{r}
-noun_phrases <- annotations_df %>%
-  dplyr::filter(upos == "NOUN" | upos == "PROPN") %>%
-  group_by(doc_id) %>%
-  summarise(phrase = paste(token, collapse = " "), .groups = "drop")
-
-```
-
-```{r}
-get_subtree_ids <- function(tokens, head_id) {
-  ids <- c(head_id)
-  repeat {
-    new_ids <- tokens$token_id[tokens$head_token_id %in% ids & !(tokens$token_id %in% ids)]
-    if (length(new_ids) == 0) break
-    ids <- c(ids, new_ids)
-  }
-  ids
-}
-
-
-adv_clauses <- annotations_df %>%
-  group_by(doc_id) %>%
-  group_modify(~{
-    advcl_tokens <- .x %>% dplyr::filter(dep_rel == "advcl")
-    if (nrow(advcl_tokens) == 0) {
-      return(tibble(type = character(), clause = character()))
-    }
-    clause_list <- lapply(advcl_tokens$token_id, function(id) {
-      ids <- get_subtree_ids(.x, id)
-      clause_tokens <- .x %>% dplyr::filter(token_id %in% ids)
-      paste(clause_tokens$token, collapse = " ")
-    })
-    tibble(type = "Adverbial Clause", clause = unlist(clause_list))
-  })
-```
-
-
-```{r}
-View(adv_clauses)
-View(noun_phrases)
-```
-
-
-```{r}
-# Create dummy data: each row represents a sentence
-set.seed(123)
-dummy_data <- data.frame(
-  sentence_id = 1:20,
-  has_noun_phrase = sample(c(TRUE, FALSE), 20, replace = TRUE),
-  has_adv_clause = sample(c(TRUE, FALSE), 20, replace = TRUE)
+mock_data <- data.frame(
+  user_id = 1:150,
+  age = sample(18:60, 150, replace = TRUE),
+  news = sample(c("Politics", "Sports", "Tech", "Health"), 150, replace = TRUE),
+  hobbies = sample(c("Reading", "Sports", "Gaming", "Cooking", "Travel"), 150, replace = TRUE),
+  `01_adv_T` = sample(5:10, 150, replace = TRUE),
+  `01_adv_F` = sample(0:5, 150, replace = TRUE),
+  `01_np_T` = sample(5:10, 150, replace = TRUE),
+  `01_np_F` = sample(0:5, 150, replace = TRUE)
 )
 
-# Convert data to long format for plotting
+write.csv(mock_data, "mock_user_data.csv", row.names = FALSE)
+
+# Create dummy data: each row represents a sentence
+dummy_data <- read.csv("mock_user_data.csv")
+
+```
+
+
+```{r}
 plot_data <- dummy_data %>%
   pivot_longer(
-    cols = c(has_noun_phrase, has_adv_clause),
+    cols = c(X01_adv_T, X01_adv_F, X01_np_T, X01_np_F),
     names_to = "phrase_type",
-    values_to = "has_phrase"
+    values_to = "count"
   ) %>%
   mutate(
-    phrase_type = recode(phrase_type,
-      has_noun_phrase = "Noun Phrase",
-      has_adv_clause = "Adverbial Clause"
-    ),
-    has_phrase = ifelse(has_phrase, "True", "False")
+    correctness = ifelse(str_detect(phrase_type, "_T$"), "Correct", "Incorrect"),
+    phrase = case_when(
+      str_detect(phrase_type, "adv") ~ "Adverbial Clause",
+      str_detect(phrase_type, "np")  ~ "Noun Phrase"
+    )
   )
 
-# Plot
-ggplot(plot_data, aes(x = has_phrase, fill = has_phrase)) +
-  geom_bar() +
-  facet_wrap(~ phrase_type) +
+ggplot(plot_data, aes(x = correctness, y = count, fill = phrase)) +
+  geom_boxplot() +
   labs(
-    title = "Presence of Noun Phrases and Adverbial Clauses (Dummy Data)",
-    x = "Contains Phrase",
-    y = "Number of Sentences"
+    title = "Accuracy in Identifying Phrases: Correct vs Incorrect",
+    x = "Response Accuracy",
+    y = "Count",
+    fill = "Phrase Type"
   ) +
-  scale_fill_manual(values = c("True" = "steelblue", "False" = "gray70")) +
-  theme_minimal()
+  theme_minimal() +
+  scale_fill_manual(
+    values = c("Adverbial Clause" = "steelblue", "Noun Phrase" = "orange")
+  )
 
 ```

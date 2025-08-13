@@ -1,27 +1,54 @@
-# LING_RESEARCH
-What indicates clauses alert the reader to fake news.
+# Does the type of clause register indicate to readers whether a text is fake or true news?
 
 
+### A project that handles text processing while filtering for specific clauses and provides visulizations and room for further analysis.
 
-## Cleaning
+## Intro
 
-I pulled the data from kaggle.
+Handling text data from two csv files containing true news and the other fake news.
+
+### Script performs the following actions:
+
+Loading csv files
+
+Cleaning out unnecessary metadata
+
+Capturing desired clauses
+
+## Prerequisites:
+
+R version 4.5.1 (2025-06-13 ucrt) -- "Great Square Root"
+
+"tidyr"
+
+"ggplot2"
+
+"dplyr"
+
+"stringr"
+
+"tibble"
+
+"udpipe"
+
+```{r}
+install.packages(c("tidyr", "ggplot2", "dplyr", "stringr", "tibble", "udpipe"))
+```
+
+# Data source and file format
+
+Access to the data used in this analysis can be fonud here;
 https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset 
 
-My first goal is to merge the two datasets and place a boolen marker on whether it comes from the true news or fake news csv file.
+File structure is as following and should be run in this order;
 
+"00_" indicates a R script for loading libraries and checking version
 
-"The Reuters - " had to be removed to ensure that when surveying goes live there
-isn't a obvious marker of what is true news.
+"01_" indicates a R script that builds the functions used in following scripts
 
-When capturing sentences 'U.S.' would be interpreted as the end of a sentence so
-I swapped 'U.S.' for 'United States'.
+"02_" indicates a R script for processing data
 
-I then capture sentences that only have more than 100 characters to ensure i get
-sentences with enough grammatical features.
+"03_" indicates a R script for filtering clauses
 
+"05_" indicates a RMD file for visualization 
 
-
-## Process
-
-ChatGPT was used to build the structure of nlp.Rmd model.
