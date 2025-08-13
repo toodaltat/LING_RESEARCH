@@ -1,0 +1,8 @@
+# Ignore this specific file
+english-ewt-ud-2.5-191206.udpipe
+
+# Ignore all .udpipe files
+*.udpipe
+
+# Ignore all files in a folder
+/data/
