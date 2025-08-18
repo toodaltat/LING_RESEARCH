@@ -1,21 +1,39 @@
-The head of a conservative Republican faction in the United States Congress, who voted this month for a huge expansion of the national debt to pay for tax cuts, called himself a “fiscal conservative” on Sunday and urged budget restraint in 2018.
-Transgender people will be allowed for the first time to enlist in the United States military starting on Monday as ordered by federal courts, the Pentagon said on Friday, after President Donald Trump’s administration decided not to appeal rulings that blocked his transgender ban.
-President Donald Trump called on the United States Postal Service on Friday to charge “much more” to ship packages for Amazon (AMZN.O), picking another fight with an online retail giant he has criticized in the past.
-Alabama officials on Thursday certified Democrat Doug Jones the winner of the state’s United States Senate race, after a state judge denied a challenge by Republican Roy Moore, whose campaign was derailed by accusations of sexual misconduct with teenage girls.
-A man claiming to be the person who delivered a gift-wrapped package of horse manure at the Los Angeles home of United States Treasury Secretary Steven Mnuchin said on Monday he did it to protest the federal tax overhaul signed into law last week by President Donald Trump.
-A Georgian-American businessman who met then-Miss
-A gift-wrapped package addressed to United States Treasury Secretary Steven Mnuchin’s home in a posh Los Angeles neighborhood that was suspected of being a bomb was instead filled with horse manure, police told local media.
-The United States Justice Department has issued new guidelines for immigration judges that remove some instructions for how to protect unaccompanied juveniles appearing in their courtrooms.
-Peru’s President Pedro Pablo Kuczynski could end up the surprise winner of an attempt to oust him from power this week, after some opposition lawmakers broke ranks with party leaders to support him, opening a divide that might strengthen his hand.
-The United States Congress on Thursday approved a temporary funding bill to prevent federal agencies from shutting down at midnight Friday when existing money was set to expire.
-A federal judge in New York on Thursday threw out a lawsuit that had accused President Donald Trump of violating the United States Constitution by accepting foreign payments through his hotels and other businesses, handing him a major victory on an issue that has dogged him since even before he took office in January.
-The ethics probe into United States Representative Blake Farenthold, who is already under a cloud for alleged sexual misconduct, is being expanded to look into whether he mixed his political campaign with congressional work and lied to the House Ethics Committee, the panel said on Thursday.
-A second United States judge on Thursday blocked President Donald Trump’s administration from enforcing new rules that undermine an Obamacare requirement for employers to provide insurance that covers women’s birth control.
-The United States House of Representatives on Thursday took a step toward averting a partial government shutdown at the end of this week, approving rules to debate a bill that would fund federal agencies through Jan.
-Republicans could hold onto control of Virginia’s legislature after a race that had appeared to change the balance of power was ruled a tie on Wednesday, setting the stage for the winner of the district to be chosen by lot.
-The White House expects the United States Congress to soon waive a rule known as “Paygo” that could trigger deep spending cuts in areas such as Medicare and agriculture in order to cover the costs of the recently passed tax overhaul, a White House official said on Wednesday.
-Wealthy business owners, such as President Donald Trump, stand to gain from a provision in the Republican tax bill that creates a valuable deduction for owners of pass-through businesses, Democrats and some tax experts say.
-Sweeping United States tax legislation appears to be on the verge of approval, lifting the prospects in particular for banks, telecoms, transports and other industries that stand to gain the most from lower corporate tax rates.
-The Republican-controlled United States House of Representatives approved sweeping, debt-financed tax legislation on Tuesday, sending the bill to the Senate, where lawmakers were due to take up the package later in the evening.
-Lawmakers of both parties are working on legislation that would make members of Congress liable for settlements of sexual harassment claims against them, as new data shows public funds have been used to settle nearly a dozen cases of misconduct over the last decade.
-A United States District Court judge ruled on Monday that President Donald Trump’s administration must allow access to abortion for two pregnant teenagers who are in the country illegally, escalating a high-profile legal fight.
+The head of a conservative Republican faction in the United States Congress, REL[who voted this month for a huge expansion of the national debt ADV[to pay for tax cuts]], called himself a “fiscal conservative” on Sunday and urged budget restraint in 2018.
+
+Transgender people will be allowed for the first time to enlist in the United States military ADV[starting on Monday as ordered by federal courts], the Pentagon said on Friday, after President Donald Trump’s administration decided not to appeal rulings REL[that blocked his transgender ban.]
+
+President Donald Trump called on the United States Postal Service on Friday ADV[to charge “much more”] to ship packages for Amazon (AMZN.O), picking another fight with an online retail giant REL[he has criticized in the past.]
+
+Alabama officials on Thursday certified Democrat Doug Jones the winner of the state’s United States Senate race, after a state judge denied a challenge by Republican Roy Moore, REL[whose campaign was derailed by accusations of sexual misconduct with teenage girls.]
+
+A man claiming to be the person REL[who delivered a gift-wrapped package of horse manure] at the Los Angeles home of United States Treasury Secretary Steven Mnuchin said on Monday he did it ADV[to protest the federal tax overhaul signed into law last week by President Donald Trump.]
+
+A gift-wrapped package addressed to United States Treasury Secretary Steven Mnuchin’s home in a posh Los Angeles neighborhood REL[that was suspected ADV[of being a bomb]] was instead filled with horse manure, police told local media.
+
+The United States Justice Department has issued new guidelines for immigration judges that REL[remove some instructions ADV[for how to protect unaccompanied juveniles appearing in their courtrooms.]]
+
+Peru’s President Pedro Pablo Kuczynski could end up the surprise winner of an attempt to oust him from power this week, ADV[after some opposition lawmakers broke ranks with party leaders to support him, opening a divide REL[that might strengthen his hand.]]
+
+The United States Congress on Thursday approved a temporary funding bill to prevent federal agencies ADV[from shutting down at midnight Friday when existing money REL[was set to expire.]]
+
+A federal judge in New York on Thursday threw out a lawsuit REL[that had accused President Donald Trump ADV[of violating the United States Constitution by accepting foreign payments through his hotels and other businesses]], handing him a major victory on an issue that has dogged him since even before he took office in January.
+
+The ethics probe into United States Representative Blake Farenthold, REL[who is already under a cloud for alleged sexual misconduct], is being expanded ADV[to look into whether he mixed his political campaign with congressional work and lied to the House Ethics Committee, the panel said on Thursday.]
+
+A second United States judge on Thursday blocked President Donald Trump’s administration from enforcing new rules REL[that undermine an Obamacare requirement for employers ADV[to provide insurance that covers women’s birth control.]]
+
+The United States House of Representatives on Thursday took a step ADV[toward averting a partial government shutdown at the end of this week,] approving rules to debate a bill REL[that would fund federal agencies through Jan.]
+
+Republicans could hold onto control of Virginia’s legislature after a race REL[that had appeared to change the balance of power] was ruled a tie on Wednesday, ADV[setting the stage for the winner of the district to be chosen by lot.]
+
+The White House expects the United States Congress ADV[to soon waive a rule known as “Paygo” REL[that could trigger deep spending cuts in areas such as Medicare and agriculture in order to cover the costs of the recently passed tax overhaul, a White House official said on Wednesday.]]
+
+Wealthy business owners, such as President Donald Trump, stand ADV[to gain from a provision in the Republican tax bill REL[that creates a valuable deduction for owners of pass-through businesses, Democrats and some tax experts say.]]
+
+Sweeping United States tax legislation appears to be on the verge of approval, ADV[lifting the prospects in particular for banks, telecoms, transports and other industries REL[that stand to gain the most from lower corporate tax rates.]]
+
+The Republican-controlled United States House of Representatives approved sweeping, debt-financed tax legislation on Tuesday, ADV[sending the bill to the Senate, REL[where lawmakers were due to take up the package later in the evening.]]
+
+Lawmakers of both parties are working on legislation REL[that would make members of Congress liable for settlements of sexual harassment claims against them, ADV[as new data shows public funds have been used to settle nearly a dozen cases of misconduct over the last decade.]]
+
+A United States District Court judge ruled on Monday that President Donald Trump’s administration must allow access to abortion for two pregnant teenagers REL[who are in the country illegally, ADV[escalating a high-profile legal fight.]]

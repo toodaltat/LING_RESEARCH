@@ -22,23 +22,8 @@ fake_annotations_df <- as.data.frame(annotations_fake)
 
 
 ################################################################################
-# Noun phrases  !!! MAY BE VOID !!! -> Relative Clauses
+# Relative Clauses
 ################################################################################
-# true_noun_chunks <- keywords_phrases(
-#   x = true_annotations_df$upos,
-#   term = true_annotations_df$token,
-#   pattern = "(DET )?(ADJ )*NOUN",
-#   is_regex = TRUE,
-#   detailed = TRUE
-# )
-# 
-# fake_noun_chunks <- keywords_phrases(
-#   x = fake_annotations_df$upos,
-#   term = fake_annotations_df$token,
-#   pattern = "(DET )?(ADJ )*NOUN",
-#   is_regex = TRUE,
-#   detailed = TRUE
-# )
 
 # True relative clauses
 rel_clauses_true <- true_annotations_df %>%
@@ -115,9 +100,8 @@ adv_clauses_fake <- fake_annotations_df %>%
 joined_df_true <- rel_clauses_true %>%
   inner_join(adv_clauses_true, by = "doc_id", suffix = c("_rel", "_adv"))
 
-
 final_true_sentence_df <- true_annotations_df %>%
-  semi_join(joined_df_true, by = "doc_id") %>%
+  inner_join(joined_df_true, by = "doc_id") %>%
   distinct(doc_id, .keep_all = TRUE) %>% 
   select(-paragraph_id, -sentence_id)
 
@@ -126,9 +110,8 @@ final_true_sentence_df <- true_annotations_df %>%
 joined_df_fake <- rel_clauses_fake %>%
   inner_join(adv_clauses_fake, by = "doc_id", suffix = c("_rel", "_adv"))
 
-
 final_fake_sentence_df <- fake_annotations_df %>%
-  semi_join(joined_df_fake, by = "doc_id") %>%
+  inner_join(joined_df_fake, by = "doc_id") %>%
   distinct(doc_id, .keep_all = TRUE) %>% 
   select(-paragraph_id, -sentence_id)
 
