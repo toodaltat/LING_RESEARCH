@@ -1,8 +1,13 @@
-# Ignore this specific file
+# Ignore these specific files
 english-ewt-ud-2.5-191206.udpipe
+.Rproj.user
+.Rhistory
+.RData
+.RDataTmp
+.RDataTmp1
 
 # Ignore all .udpipe files
 *.udpipe
 
 # Ignore all files in a folder
-/data/
+/data_sets/

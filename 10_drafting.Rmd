@@ -1,0 +1,27 @@
+---
+title: "workbench"
+author: "74465159 Ethan Milne"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+View(final_true_sentence_df)
+
+View(final_fake_sentence_df)
+```
+
+```{r}
+# write.table(final_true_sentence_df["sentence"], "sentences_true.txt", 
+#             row.names = FALSE, col.names = FALSE, quote = FALSE)
+# 
+# 
+# write.table(final_fake_sentence_df["sentence"], "sentences_fake.txt", 
+#             row.names = FALSE, col.names = FALSE, quote = FALSE)
+```
+
+
