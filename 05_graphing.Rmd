@@ -13,8 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 source("03_evaluating.R")
 ```
 
+
 # Mock csv file
 ```{r}
+View(final_fake_sentence_df)
 
 mock_data <- data.frame(
   user_id = 1:150,

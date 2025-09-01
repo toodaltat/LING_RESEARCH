@@ -1,25 +1,27 @@
 source("02_processing.R")
 
 ################################################################################
-# Loading model
-################################################################################
-
-# true_df <- sentence_true
-# fake_df <- sentence_fake
-
-udmodel <- udpipe_download_model(language = "english-ewt")
-udmodel <- udpipe_load_model(file = udmodel$file_model)
-
-
-################################################################################
 # Loading model with content
 ################################################################################
-annotations_true <- udpipe_annotate(udmodel, x = true_df$first_sentence, doc_id = true_df$entry)
-annotations_fake <- udpipe_annotate(udmodel, x = fake_df$first_sentence, doc_id = fake_df$entry)
 
-true_annotations_df <- as.data.frame(annotations_true)
-fake_annotations_df <- as.data.frame(annotations_fake)
+# true_annotations_df <- udpipe_annotate(udmodel, x = true_df$first_sentence, doc_id = true_df$entry)
+# fake_annotations_df <- udpipe_annotate(udmodel, x = fake_df$first_sentence, doc_id = fake_df$entry)
+# 
+# true_annotations_df <- as.data.frame(true_annotations_df)
+# fake_annotations_df <- as.data.frame(fake_annotations_df)
+true_annotations_df <- udpipe_annotate(
+  udmodel,
+  x = true_df$first_sentence,
+  doc_id = true_df$entry
+) |> 
+  as.data.frame()
 
+fake_annotations_df <- udpipe_annotate(
+  udmodel,
+  x = fake_df$first_sentence,
+  doc_id = fake_df$entry
+) |> 
+  as.data.frame()
 
 ################################################################################
 # Relative Clauses
@@ -92,6 +94,7 @@ adv_clauses_fake <- fake_annotations_df %>%
     })
     tibble(type = "Adverbial Clause", clause = unlist(clause_list))
   })
+
 ################################################################################
 # Table join
 ################################################################################

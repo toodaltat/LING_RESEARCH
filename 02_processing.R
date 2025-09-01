@@ -1,14 +1,12 @@
-# Loading libraries, checking versions and availability 
 source("01_tools.R")
 
 ################################################################################
 # Loading csv
 ################################################################################
+
 df_fake <- read.csv(file.path(file_path, "fake.csv"))
 
 df_true <- read.csv(file.path(file_path, "true.csv"))
-################################################################################
-
 
 ################################################################################
 # Cleaning #
@@ -19,8 +17,6 @@ df_true$text <- stringr::str_replace(df_true$text, "^.*?(?:\\(Reuters\\)\\s*-\\s
 
 # Cheap way to over come 'U.S.' interrupting sentence 
 df_true$text <- gsub("U.S.", "United States", df_true$text, fixed = TRUE)
-################################################################################
-
 
 ################################################################################
 # Extraction
@@ -43,9 +39,6 @@ df_sentence_fake <- data.frame(
 )
 rownames(df_sentence_fake) <- NULL
 df_sentence_fake <- head(df_sentence_fake, 500)
-
-################################################################################
-
 
 ################################################################################
 # Collecting the first 100 sentences and filtering by sentences that have more than 100 characters
