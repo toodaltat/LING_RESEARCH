@@ -1,0 +1,101 @@
+---
+title: "workbench"
+author: "74465159 Ethan Milne"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+source("10_survey_cleaning.R")
+```
+
+GRAPHING
+```{r}
+df_long %>%
+  mutate(group = sub(".*_(TT|TF|FT|FF)$", "\\1", question_code)) %>%
+  ggplot(aes(x = group, y = response)) +
+  geom_boxplot() +
+  labs(title = "Response Distribution by Question Group")
+
+```
+
+```{r}
+# General view
+ggplot(df_long, aes(x = category)) +
+  geom_bar(fill = "steelblue") +
+  labs(title = "Response Categories",
+       x = "Category",
+       y = "Count") +
+  theme_minimal()
+```
+
+
+```{r}
+ggplot(df_long, aes(x = mod_factor, y = response, fill = mod_factor)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Response by mod_factor",
+    x = "mod_factor",
+    y = "Response"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+ggplot(df_long, aes(x = category, y = response, fill = mod_factor)) +
+  geom_boxplot(position = position_dodge(0.8)) +
+  labs(
+    title = "Distribution of Response by mod_factor and Category",
+    x = "mod_factor",
+    y = "Response"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+ggplot(df_long, aes(x = mod_factor, fill = mod_factor)) +
+  geom_bar() +
+  facet_wrap(~ category) +
+  labs(
+    title = "Count of Responses by mod_factor (faceted by Category)",
+    x = "mod_factor",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+```
+
+
+```{r}
+df_unique <- df_long %>%
+  distinct(response_id, .keep_all = TRUE)
+
+unique(df_unique$origin)
+
+uni_age <- df_long %>%
+  distinct(age)
+
+origin_counts <- df_unique %>%
+  group_by(origin) %>%
+  summarise(count = n(), .groups = "drop")
+
+print(origin_counts)
+print(uni_age)
+```
+
+
+```{r, echo=FALSE}
+write.csv(df_long, "ethans_df.csv", row.names = FALSE)
+write.csv(questions, "ethans_questions_df.csv", row.names = FALSE)
+
+```
+

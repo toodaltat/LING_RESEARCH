@@ -1,0 +1,282 @@
+---
+title: "workbench"
+author: "74465159 Ethan Milne"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+crd_text_t <- c("The head of a conservative Republican faction in the United States Congress, who voted this month for a huge expansion of the national debt to pay for tax cuts, called himself a “fiscal conservative” on Sunday and urged budget restraint in 2018.", "Transgender people will be allowed for the first time to enlist in the United States military starting on Monday as ordered by federal courts, the Pentagon said on Friday, after President Donald Trump’s administration decided not to appeal rulings that blocked his transgender ban.", "President Donald Trump called on the United States Postal Service on Friday to charge “much more” to ship packages for Amazon (AMZN.O), picking another fight with an online retail giant he has criticized in the past.", "A man claiming to be the person who delivered a gift-wrapped package of horse manure at the Los Angeles home of United States Treasury Secretary Steven Mnuchin said on Monday he did it to protest the federal tax overhaul signed into law last week by President Donald Trump.", "A gift-wrapped package addressed to United States Treasury Secretary Steven Mnuchin’s home in a posh Los Angeles neighborhood that was suspected of being a bomb was instead filled with horse manure, police told local media.", "The United States Justice Department has issued new guidelines for immigration judges that remove some instructions for how to protect unaccompanied juveniles appearing in their courtrooms.", "Peru’s President Pedro Pablo Kuczynski could end up the surprise winner of an attempt to oust him from power this week, after some opposition lawmakers broke ranks with party leaders to support him, opening a divide that might strengthen his hand.", "The United States Congress on Thursday approved a temporary funding bill to prevent federal agencies from shutting down at midnight Friday when existing money was set to expire."
+)
+              
+crd_text_f <- c("Just when you might have thought we'd get a break from watching people kiss Donald Trump's ass and stroke his ego ad nauseam, a pro-Trump group creates an ad that's nothing but people doing even more of those exact things.", "Republicans are working overtime trying to sell their scam of a tax bill to the public as something that directly targets middle-class and working-class families with financial relief.", "While on the campaign trail, Donald Trump promised to revive the coal industry and after he took power, he signed an executive order rolling back a temporary ban on mining coal and a stream protection rule that was imposed by the Obama administration.", "Former reality show star Donald Trump has repeatedly refused to be held responsible for the words that come out of his own mouth, even when it's on tape.", "All senator John McCain wanted to achieve on the morning of Monday, December 4 was to hit that magic milestone of three million Twitter followers, a goal of which he was just 74 followers shy.", "Donald Trump just got back from binge-golfing over a span of five days and he's on track to triple the time former President Barack Obama spent on the golf course in his first year in office even though he repeatedly disparaged his predecessor for golfing.", "As a Democrat won a Senate seat in deep-red Alabama, social media offered up everyone's opinion because that's what social media does."
+)
+# Run analysis on all texts
+true_results_df <- analyze_texts(crd_text_t, udmodel)
+false_results_df <- analyze_texts(crd_text_f, udmodel)
+
+# Combine original text with results
+true_final_df <- data.frame(
+  text = crd_text_t,
+  true_results_df
+)
+
+false_final_df <- data.frame(
+  text = crd_text_f,
+  false_results_df
+)
+
+# Peek at first few rows
+View(true_final_df)
+View(false_final_df)
+```
+
+```{r}
+thing <- "On Thursday, the United States Congress approved a temporary funding bill, This bill prevents federal agencies from shutting down at midnight Friday, when current funding was set to expire."
+
+output <- analyze_texts(thing, udmodel)
+View(output)
+
+```
+
+
+
+```{r}
+
+df_results <- bind_cols(final_true_sentence_df, analyze_texts(final_true_sentence_df$sentence, udmodel))
+
+
+View(df_results)
+```
+
+```{r}
+# write.table(final_true_sentence_df["sentence"], "sentences_true.txt", 
+#             row.names = FALSE, col.names = FALSE, quote = FALSE)
+# 
+# 
+# write.table(final_fake_sentence_df["sentence"], "sentences_fake.txt", 
+#             row.names = FALSE, col.names = FALSE, quote = FALSE)
+```
+
+```{r}
+View(fake_df)
+
+fake_df <- fake_df %>% 
+  unique(fake_df$entry)
+
+```
+
+
+Archive
+```{r}
+
+################################################################################
+# Framework for clause extraction
+################################################################################
+
+# Used in file '03_evaluating.Rmd'
+get_subtree_ids <- function(tokens, head_id) {
+  ids <- c(head_id)
+  repeat {
+    new_ids <- tokens$token_id[tokens$head_token_id %in% ids & !(tokens$token_id %in% ids)]
+    if (length(new_ids) == 0) break
+    ids <- c(ids, new_ids)
+  }
+  ids
+}
+
+
+################################################################################
+# CRD // IC to word ratio
+################################################################################
+
+# Function to calculate CRD + IC-to-word ratio for one text
+analyze_syntax <- function(text, udmodel) {
+  if (is.na(text) || text == "") {
+    return(list(CRD = NA, IC_to_word_ratio = NA))
+  }
+  
+  # Parse text
+  anno <- udpipe_annotate(udmodel, x = text)
+  anno <- as.data.frame(anno)
+  
+  if (nrow(anno) == 0) {
+    return(list(CRD = NA, IC_to_word_ratio = NA))
+  }
+  
+  # --- Immediate Constituents (IC) ---
+  ic_counts <- anno %>%
+    group_by(head_token_id) %>%
+    summarise(IC = n(), .groups = "drop")
+  
+  total_ic <- sum(ic_counts$IC)
+  
+  # --- CRD (Constituent Recognition Domain) ---
+  crd <- anno %>%
+    mutate(token_id = as.numeric(token_id)) %>% 
+    group_by(head_token_id) %>%
+    summarise(
+      CRD = max(token_id, na.rm = TRUE) - min(token_id, na.rm = TRUE) + 1,
+      .groups = "drop"
+    )
+  
+  avg_crd <- mean(crd$CRD, na.rm = TRUE)  # average CRD per constituent
+  
+  # --- IC-to-word ratio ---
+  total_words <- nrow(anno)
+  ic_to_word_ratio <- total_ic / total_words
+  
+  return(list(CRD = avg_crd, IC_to_word_ratio = ic_to_word_ratio))
+}
+
+# Vectorized wrapper for a dataframe column
+analyze_texts <- function(texts, udmodel) {
+  results <- lapply(texts, analyze_syntax, udmodel = udmodel)
+  results_df <- bind_rows(lapply(results, as.data.frame))
+  return(results_df)
+}
+
+
+# # 
+# true_annotations_df <- udpipe_annotate(
+#    udmodel,
+#    x = true_df$first_sentence,
+#    doc_id = true_df$entry
+# ) |>
+#   as.data.frame()
+# 
+# fake_annotations_df <- udpipe_annotate(
+#   udmodel,
+#   x = fake_df$first_sentence,
+#   doc_id = fake_df$entry
+# ) |>
+#   as.data.frame()
+# 
+# ################################################################################
+# # Relative Clauses
+# ################################################################################
+# 
+# # True relative clauses
+# rel_clauses_true <- true_annotations_df %>%
+#   group_by(doc_id) %>%
+#   group_modify(~{
+#     relcl_tokens <- .x %>% dplyr::filter(dep_rel == "acl:relcl")
+#     if (nrow(relcl_tokens) == 0) {
+#       return(tibble(type = character(), clause = character()))
+#     }
+#     clause_list <- lapply(relcl_tokens$token_id, function(id) {
+#       ids <- get_subtree_ids(.x, id)
+#       clause_tokens <- .x %>% dplyr::filter(token_id %in% ids)
+#       paste(clause_tokens$token, collapse = " ")
+#     })
+#     tibble(type = "Relative Clause", clause = unlist(clause_list))
+#   })
+# 
+# # Fake relative clauses
+# rel_clauses_fake <- fake_annotations_df %>%
+#   group_by(doc_id) %>%
+#   group_modify(~{
+#     relcl_tokens <- .x %>% dplyr::filter(dep_rel == "acl:relcl")
+#     if (nrow(relcl_tokens) == 0) {
+#       return(tibble(type = character(), clause = character()))
+#     }
+#     clause_list <- lapply(relcl_tokens$token_id, function(id) {
+#       ids <- get_subtree_ids(.x, id)
+#       clause_tokens <- .x %>% dplyr::filter(token_id %in% ids)
+#       paste(clause_tokens$token, collapse = " ")
+#     })
+#     tibble(type = "Relative Clause", clause = unlist(clause_list))
+#   })
+# 
+# ################################################################################
+# # Adverbial clauses
+# ################################################################################
+# 
+# # True adverbial clauses
+# adv_clauses_true <- true_annotations_df %>%
+#   group_by(doc_id) %>%
+#   group_modify(~{
+#     advcl_tokens <- .x %>% dplyr::filter(dep_rel == "advcl")
+#     if (nrow(advcl_tokens) == 0) {
+#       return(tibble(type = character(), clause = character()))
+#     }
+#     clause_list <- lapply(advcl_tokens$token_id, function(id) {
+#       ids <- get_subtree_ids(.x, id)
+#       clause_tokens <- .x %>% dplyr::filter(token_id %in% ids)
+#       paste(clause_tokens$token, collapse = " ")
+#     })
+#     tibble(type = "Adverbial Clause", clause = unlist(clause_list))
+#   })
+# 
+# # Fake adverbial clauses
+# adv_clauses_fake <- fake_annotations_df %>%
+#   group_by(doc_id) %>%
+#   group_modify(~{
+#     advcl_tokens <- .x %>% dplyr::filter(dep_rel == "advcl")
+#     if (nrow(advcl_tokens) == 0) {
+#       return(tibble(type = character(), clause = character()))
+#     }
+#     clause_list <- lapply(advcl_tokens$token_id, function(id) {
+#       ids <- get_subtree_ids(.x, id)
+#       clause_tokens <- .x %>% dplyr::filter(token_id %in% ids)
+#       paste(clause_tokens$token, collapse = " ")
+#     })
+#     tibble(type = "Adverbial Clause", clause = unlist(clause_list))
+#   })
+# 
+# ################################################################################
+# # Table join
+# ################################################################################
+# 
+# # True table
+# joined_df_true <- rel_clauses_true %>%
+#   inner_join(adv_clauses_true, by = "doc_id", suffix = c("_rel", "_adv"))
+# 
+# final_true_sentence_df <- true_annotations_df %>%
+#   inner_join(joined_df_true, by = "doc_id") %>%
+#   distinct(doc_id, .keep_all = TRUE) %>%
+#   select(-paragraph_id, -sentence_id)
+# 
+# 
+# # Fake table
+# joined_df_fake <- rel_clauses_fake %>%
+#   inner_join(adv_clauses_fake, by = "doc_id", suffix = c("_rel", "_adv"))
+# 
+# final_fake_sentence_df <- fake_annotations_df %>%
+#   inner_join(joined_df_fake, by = "doc_id") %>%
+#   distinct(doc_id, .keep_all = TRUE) %>%
+#   select(-paragraph_id, -sentence_id)
+# 
+
+
+plot_data <- dummy_data %>%
+  pivot_longer(
+    cols = c(X01_adv_T, X01_adv_F, X01_np_T, X01_np_F),
+    names_to = "phrase_type",
+    values_to = "count"
+  ) %>%
+  mutate(
+    correctness = ifelse(str_detect(phrase_type, "_T$"), "Correct", "Incorrect"),
+    phrase = case_when(
+      str_detect(phrase_type, "adv") ~ "Adverbial Clause",
+      str_detect(phrase_type, "np")  ~ "Noun Phrase"
+    )
+  )
+
+ggplot(plot_data, aes(x = correctness, y = count, fill = phrase)) +
+  geom_boxplot() +
+  labs(
+    title = "Accuracy in Identifying Phrases: Correct vs Incorrect",
+    x = "Response Accuracy",
+    y = "Count",
+    fill = "Phrase Type"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c("Adverbial Clause" = "steelblue", "Noun Phrase" = "orange")
+  )
+
