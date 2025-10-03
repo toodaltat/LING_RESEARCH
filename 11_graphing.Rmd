@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, echo=FALSE}
 source("10_survey_cleaning.R")
 ```
 
@@ -72,30 +72,21 @@ ggplot(df_long, aes(x = mod_factor, fill = mod_factor)) +
 
 
 ```{r}
-```
+View(df_long)
 
-
-```{r}
-df_unique <- df_long %>%
-  distinct(response_id, .keep_all = TRUE)
-
-unique(df_unique$origin)
-
-uni_age <- df_long %>%
-  distinct(age)
-
-origin_counts <- df_unique %>%
-  group_by(origin) %>%
-  summarise(count = n(), .groups = "drop")
-
-print(origin_counts)
-print(uni_age)
-```
-
-
-```{r, echo=FALSE}
-write.csv(df_long, "ethans_df.csv", row.names = FALSE)
-write.csv(questions, "ethans_questions_df.csv", row.names = FALSE)
-
+# df_unique <- df_long %>%
+#   distinct(response_id, .keep_all = TRUE)
+# 
+# unique(df_unique$origin)
+# 
+# uni_age <- df_long %>%
+#   distinct(age)
+# 
+# origin_counts <- df_unique %>%
+#   group_by(origin) %>%
+#   summarise(count = n(), .groups = "drop")
+# 
+# print(origin_counts)
+# print(uni_age)
 ```
 
