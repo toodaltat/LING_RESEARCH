@@ -1,13 +1,8 @@
-library(tidyr)
-library(ggplot2)
-library(dplyr)
-library(stringr)
-library(tibble)
+library(tidyverse)
 library(udpipe)
 library(qualtRics)
 library(knitr)
-library(readr)
-library(tidyverse)
+library(ggplot2)
 
 R.version.string
 
@@ -40,11 +35,25 @@ extract_first_sentence <- function(texts) {
 # Functions for survey handling
 ################################################################################
 
+# Defining questions category
+groupings <- list(
+  TT = c("Q4", "Q9", "Q15", "Q17"),
+  TF = c("Q1", "Q5", "Q8", "Q14"),
+  FT = c("Q2", "Q6", "Q11", "Q12", "Q13"),
+  FF = c("Q3", "Q7", "Q10", "Q16", "Q18")
+)
+
+group_lookup <- map2(groupings, names(groupings),
+                     ~ setNames(rep(.y, length(.x)), .x)) %>%
+  flatten_chr()
+
+# Reading in CSV
 load_raw_data <- function(path) {
   readr::read_csv(path, col_names = FALSE,
                   show_col_types = FALSE)
 }
 
+# Seperates questions into a look up dataframe
 extract_questions <- function(raw) {
   names_short <- unlist(raw[1, ])
   names_long  <- unlist(raw[2, ])
@@ -56,7 +65,14 @@ extract_questions <- function(raw) {
     mutate(across(everything(), as.character))
 }
 
+# Handles missing responses
+extract_missing_responses <- function(df_long) {
+  df_long %>%
+    filter(is.na(response) | response == "" | question_code == "Q0")
+}
 
+
+# Moves from wide to long
 reshape_data <- function(raw, questions) {
   # Removes header rows and assigns column names
   names_short <- unlist(raw[1, ])
@@ -81,6 +97,8 @@ reshape_data <- function(raw, questions) {
     )
 }
 
+
+# Cleans and handles missing entries
 clean_data <- function(df_long, group_lookup) {
   df_long %>%
     slice(-(1:19)) %>%
@@ -93,12 +111,10 @@ clean_data <- function(df_long, group_lookup) {
         question_code
       )
     ) %>%
-    # Removing practice question and empty responses
     filter(!is.na(response), response != "", question_code != "Q0") %>%
     mutate(
       response = as.numeric(response),
       across(where(is.character), str_trim),
-      # Standardizing origin
       origin = case_when(
         str_to_lower(origin) == "nz" ~ "New Zealand",
         TRUE ~ origin
@@ -114,16 +130,3 @@ clean_data <- function(df_long, group_lookup) {
       mod_factor = str_sub(question_code, -1)
     )
 }
-
-# Defining questions category
-groupings <- list(
-  TT = c("Q4", "Q9", "Q15", "Q17"),
-  TF = c("Q1", "Q5", "Q8", "Q14"),
-  FT = c("Q2", "Q6", "Q11", "Q12", "Q13"),
-  FF = c("Q3", "Q7", "Q10", "Q16", "Q18")
-)
-
-group_lookup <- map2(groupings, names(groupings),
-                     ~ setNames(rep(.y, length(.x)), .x)) %>%
-  flatten_chr()
-

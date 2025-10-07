@@ -10,12 +10,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, echo=FALSE}
+
 source("10_survey_cleaning.R")
+df$category <- factor(df$category, levels = c("low", "mid", "high"))
+
 ```
 
 GRAPHING
 ```{r}
-df_long %>%
+df %>%
   mutate(group = sub(".*_(TT|TF|FT|FF)$", "\\1", question_code)) %>%
   ggplot(aes(x = group, y = response)) +
   geom_boxplot() +
@@ -25,7 +28,7 @@ df_long %>%
 
 ```{r}
 # General view
-ggplot(df_long, aes(x = category)) +
+ggplot(df, aes(x = category)) +
   geom_bar(fill = "steelblue") +
   labs(title = "Response Categories",
        x = "Category",
@@ -35,7 +38,7 @@ ggplot(df_long, aes(x = category)) +
 
 
 ```{r}
-ggplot(df_long, aes(x = mod_factor, y = response, fill = mod_factor)) +
+ggplot(df, aes(x = mod_factor, y = response, fill = mod_factor)) +
   geom_boxplot() +
   labs(
     title = "Distribution of Response by mod_factor",
@@ -46,47 +49,123 @@ ggplot(df_long, aes(x = mod_factor, y = response, fill = mod_factor)) +
 ```
 
 ```{r}
-ggplot(df_long, aes(x = category, y = response, fill = mod_factor)) +
+ggplot(df, aes(x = category, y = response, fill = mod_factor)) +
   geom_boxplot(position = position_dodge(0.8)) +
   labs(
     title = "Distribution of Response by mod_factor and Category",
-    x = "mod_factor",
+    x = "Category",
     y = "Response"
   ) +
   theme_minimal()
+
 ```
 
 
 ```{r}
-ggplot(df_long, aes(x = mod_factor, fill = mod_factor)) +
+ggplot(df, aes(x = mod_factor, fill = mod_factor)) +
   geom_bar() +
   facet_wrap(~ category) +
   labs(
-    title = "Count of Responses by mod_factor (faceted by Category)",
+    title = "Count of Responses by mod_factor",
     x = "mod_factor",
     y = "Count"
   ) +
   theme_minimal()
 
 ```
+```{r}
+# Handling missing dataframe
+df_missing <- df_missing %>%
+  mutate(
+    response = as.numeric(response),
+    across(where(is.character), str_trim),
+    origin = case_when(
+      str_to_lower(origin) %in% c(
+        "nz",
+        "new zealand",
+        "aotearoa",
+        "aotearoa new zealand"
+      ) ~ "New Zealand",
+      TRUE ~ origin
+    )
+  )
+
+```
+
+```{r}
+# View(df)
+# View(df_missing)
+
+df_unique <- df %>%
+  distinct(response_id, .keep_all = TRUE)
+ 
+origin_counts <- df_unique %>%
+  group_by(origin) %>%
+  summarise(count = n(), .groups = "drop")
+
+###########################################
+
+df_missing_unique <- df_missing %>%
+  distinct(response_id, .keep_all = TRUE)
+ 
+origin_missing_counts <- df_missing_unique %>%
+  group_by(origin) %>%
+  summarise(count = n(), .groups = "drop")
+
+##########################################
+
+missing_summary <- df_missing_unique %>%
+  filter(is.na(response) | response == "") %>%
+  summarise(total_missing = n())
+
+
+
+
+
+print(missing_summary)
+print(origin_counts) 
+print(origin_missing_counts)
+```
 
 
 ```{r}
-View(df_long)
+library(dplyr)
+library(knitr)
 
-# df_unique <- df_long %>%
-#   distinct(response_id, .keep_all = TRUE)
-# 
-# unique(df_unique$origin)
-# 
-# uni_age <- df_long %>%
-#   distinct(age)
-# 
-# origin_counts <- df_unique %>%
-#   group_by(origin) %>%
-#   summarise(count = n(), .groups = "drop")
-# 
-# print(origin_counts)
-# print(uni_age)
+# Step 1: Join the valid and missing counts by origin
+origin_summary <- full_join(origin_counts, origin_missing_counts,
+                            by = "origin",
+                            suffix = c("_valid", "_missing")) %>%
+  replace_na(list(count_valid = 0, count_missing = 0)) %>%
+  mutate(total_responses = count_valid + count_missing)
+
+# Step 2: Add an overall total row
+origin_summary <- origin_summary %>%
+  bind_rows(
+    tibble(
+      origin = "TOTAL",
+      count_valid = sum(.$count_valid),
+      count_missing = sum(.$count_missing),
+      total_responses = sum(.$total_responses)
+    )
+  )
+
+# Step 3: Display nicely with kable
+kable(
+  origin_summary,
+  caption = "Survey Response Summary by Origin",
+  align = c("l", "c", "c", "c"),
+  col.names = c("Origin", "Valid Responses", "Missing Responses", "Total Responses")
+)
+
+
+
+library(gt)
+origin_summary %>%
+  gt() %>%
+  tab_header(title = "Survey Response Summary by Origin") %>%
+  fmt_number(columns = where(is.numeric), decimals = 0)
+
+
 ```
 
