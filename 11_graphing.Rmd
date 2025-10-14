@@ -18,8 +18,8 @@ GRAPHING
 p <- ggplot(df, aes(x = category, fill = category)) +
   geom_bar() +
   scale_fill_brewer(palette = "Set2") +
-  labs(title = "Response Categories",
-       x = "Category",
+  labs(title = "Response Ranges",
+       x = "Range",
        y = "Count") +
   theme_minimal(base_size = 14) +
   theme(legend.position = "none") +
@@ -29,7 +29,7 @@ p <- ggplot(df, aes(x = category, fill = category)) +
     panel.background = element_rect(fill = "white", color = NA)
   )
 print(p)
-ggsave("response_categories.png", plot = p, width = 8, height = 6, dpi = 300)
+ggsave("response_range.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 
@@ -73,6 +73,28 @@ p <- ggplot(df, aes(x = mod_factor, fill = mod_factor)) +
   )
 print(p)
 ggsave("count_responses_mod.png", plot = p, width = 8, height = 6, dpi = 300)
+```
+
+
+```{r}
+p <- ggplot(df, aes(x = truth_factor, fill = truth_factor)) +
+  geom_bar() +
+  scale_fill_brewer(palette = "Set2") +
+  facet_wrap(~ category) +
+  labs(
+    title = "Count of Responses by Truth Factor",
+    x = "Truth Factor",
+    y = "Count"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none") +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA)
+  )
+print(p)
+ggsave("count_responses_truth.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 
@@ -121,14 +143,14 @@ ggsave("mean_response.png", plot = p, width = 8, height = 6, dpi = 300)
 
 ```{r}
 p <- df %>%
-  count(category, mod_factor) %>%
-  complete(category, mod_factor, fill = list(n = 0)) %>%
-  ggplot(aes(x = mod_factor, y = category, fill = n)) +
+  count(category, truth_factor) %>%
+  complete(category, truth_factor, fill = list(n = 0)) %>%
+  ggplot(aes(x = truth_factor, y = category, fill = n)) +
   geom_tile(color = "white") +
   geom_text(aes(label = n), color = "white") + 
   scale_fill_gradientn(colors = viridis::viridis(10)) +
-  labs(title = "Response Category by Mod Factor",
-       x = "Mod Factor", y = "Category", fill = "Count") +
+  labs(title = "Response Range by Truth Factor",
+       x = "Truth Factor", y = "Range", fill = "Count") +
   theme_minimal(base_size = 14) +
   theme(
     legend.position = "none",
@@ -136,7 +158,29 @@ p <- df %>%
     panel.background = element_rect(fill = "white", color = NA)
   )
 print(p)
-ggsave("response_category_mod_factor.png", plot = p, width = 8, height = 6, dpi = 300)
+ggsave("response_range_truth_factor.png", plot = p, width = 8, height = 6, dpi = 300)
+```
+
+
+```{r}
+p <- df %>%
+  count(category, mod_factor) %>%
+  complete(category, mod_factor, fill = list(n = 0)) %>%
+  ggplot(aes(x = mod_factor, y = category, fill = n)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = n), color = "white") + 
+  scale_fill_gradientn(colors = viridis::viridis(10)) +
+  labs(title = "Response Range by Mod Factor",
+       x = "Mod Factor", y = "Range", fill = "Count") +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA)
+  )
+print(p)
+ggsave("response_range_mod_factor.png", plot = p, width = 8, height = 6, dpi = 300)
+
 ```
 
 
@@ -148,8 +192,8 @@ p <- df %>%
   geom_tile(color = "white") +
   geom_text(aes(label = n), color = "white") + 
   scale_fill_gradientn(colors = viridis::viridis(10)) +
-  labs(title = "Response Category by Branching",
-       x = "Branching", y = "Category", fill = "Count") +
+  labs(title = "Response Range by Branching",
+       x = "Branching", y = "Range", fill = "Count") +
   theme_minimal(base_size = 14) +
   theme(
     legend.position = "none",
@@ -157,7 +201,7 @@ p <- df %>%
     panel.background = element_rect(fill = "white", color = NA)
   )
 print(p)
-ggsave("response_category_branching.png", plot = p, width = 8, height = 6, dpi = 300)
+ggsave("response_range_branching.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 
@@ -165,8 +209,8 @@ ggsave("response_category_branching.png", plot = p, width = 8, height = 6, dpi =
 p <- ggplot(df, aes(x = category, fill = branching)) +
   geom_bar(position = "dodge") +
   scale_fill_brewer(palette = "Set2") +
-  labs(title = "Response Category by Branching",
-       x = "Response Category",
+  labs(title = "Response Range by Branching",
+       x = "Response Range",
        y = "Count",
        fill = "Branching") +
   theme_minimal(base_size = 14) +
@@ -209,10 +253,10 @@ p <- ggplot(df, aes(x = category, fill = branching)) +
   facet_wrap(~ origin, scales = "free_y") +
   scale_fill_brewer(palette = "Set2",
                     name = "Branching",
-                    labels = c("Left-branching", "Right branching")) +
+                    labels = c("Left branching", "Right branching")) +
   labs(
     title = "Responses by Branching and Origin",
-    x = "Response Category",
+    x = "Response Range",
     y = "Number of Responses"
   ) +
   theme_minimal(base_size = 14) +
@@ -227,6 +271,33 @@ p <- ggplot(df, aes(x = category, fill = branching)) +
   )
 print(p)
 ggsave("origin_responses_branch.png", plot = p, width = 8, height = 6, dpi = 300)
+```
+
+
+```{r}
+p <- ggplot(df, aes(x = category, fill = truth_factor)) +
+  geom_bar(position = position_dodge(width = 0.8), width = 0.7) +
+  facet_wrap(~ origin, scales = "free_y") +
+  scale_fill_brewer(palette = "Set2",
+                    name = "News Article",
+                    labels = c("Fake News", "True News")) +
+  labs(
+    title = "Responses by Truth Factor and Origin",
+    x = "Response Range",
+    y = "Number of Responses"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold", size = 13, color = "#333333"),
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold"),
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA)
+  )
+print(p)
+ggsave("origin_responses_truth.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 
@@ -256,9 +327,9 @@ origin_summary <- summarise_origin_counts(df_unique, df_missing_unique)
 
 kable(
   origin_summary,
-  caption = "Survey Response Summaraised by Origin",
+  caption = "Survey Response Summarized by Origin",
   align = c("l", "c", "c", "c"),
-  col.names = c("Origin", "Valid Responses", "Invaild Responses", "Total Responses")
+  col.names = c("Country", "Valid Responses", "Invaild Responses", "Total Responses")
 )
 
 save_table_png(origin_summary, "origin_summary.png", width = 1000, height = 600)

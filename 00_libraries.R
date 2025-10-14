@@ -208,6 +208,7 @@ clean_data <- function(df_long, group_lookup) {
       ),
       # Extracting last char as mod_factor
       mod_factor = str_sub(question_code, -1),
+      truth_factor = str_sub(str_extract(question_code, "(?<=_)[:alpha:]{2}"), 1, 1),
       question_clean = sub("_.*", "", question_code)
     ) %>%
     # Join branching lookup
@@ -328,6 +329,12 @@ summarise_origin_counts <- function(df_valid, df_missing, group_col = "origin") 
         count_missing = sum(.$count_missing),
         total_responses = sum(.$total_responses)
       )
+      ) %>%
+    rename(
+      Country = .data[[group_col]],
+      "Valid Responses" = count_valid,
+      "Invalid Responses" = count_missing,
+      "Total Responses" = total_responses
     )
   
   return(summary)
